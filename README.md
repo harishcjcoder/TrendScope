@@ -1,9 +1,9 @@
-﻿# TrendScope | Earth Observatory Intelligence
+# TrendScope | Earth Observatory Intelligence
 
 **NASA Space Apps Challenge 2026 Entry**  
 **Challenge**: "Be an Earth System Trend Detective"  
 **Live Application**: [https://6e6d4fdc-trendscope-earth-data-explorer.netlify.app/](https://6e6d4fdc-trendscope-earth-data-explorer.netlify.app/)  
-**GitHub Repository**: [https://github.com/harish-cj/TrendScope](https://github.com/harish-cj/TrendScope)  
+**GitHub Repository**: [https://github.com/harishcjcoder/TrendScope](https://github.com/harishcjcoder/TrendScope)  
 
 ---
 
@@ -61,7 +61,7 @@ ALL MATCH pymannkendall
 TrendScope is built with zero compilation friction. No `npm run build` or bundler required:
 ```bash
 # Clone the repository
-git clone https://github.com/harish-cj/TrendScope.git
+git clone https://github.com/harishcjcoder/TrendScope.git
 cd TrendScope
 
 # Start any static server

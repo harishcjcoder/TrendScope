@@ -1,9 +1,9 @@
-﻿# TrendScope: Comprehensive Project Description (500 Words)
+# TrendScope: Comprehensive Project Description (500 Words)
 
 **Project Name**: TrendScope | Earth Observatory Intelligence  
 **Challenge**: NASA Space Apps Challenge 2026 — "Be an Earth System Trend Detective"  
 **Live Site**: https://6e6d4fdc-trendscope-earth-data-explorer.netlify.app/  
-**Code Repository**: https://github.com/harish-cj/TrendScope  
+**Code Repository**: https://github.com/harishcjcoder/TrendScope  
 
 ---
 
