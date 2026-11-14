@@ -94,6 +94,7 @@ Open `http://localhost:3000` (or `http://localhost:8000`) in your browser.
     ├── demo-script.md           # 3-minute video presentation script
     ├── slides-outline.md        # 8-slide presentation outline
     ├── data-sources.md          # Scientific lineage & NASA POWER citation
+    ├── tools-and-ai-disclosure.md # Complete Tools & AI transparency disclosure
     └── DECISIONS.md             # Complete record of engineering decisions
 ```
 
