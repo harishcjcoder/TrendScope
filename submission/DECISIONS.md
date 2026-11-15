@@ -1,4 +1,4 @@
-﻿# TrendScope Architectural & Scientific Decisions (DECISIONS.md)
+# TrendScope Architectural & Scientific Decisions (DECISIONS.md)
 
 **Project**: TrendScope — Earth Observatory Intelligence  
 **Challenge**: NASA Space Apps Challenge 2026 ("Be an Earth System Trend Detective")  
@@ -35,3 +35,14 @@
 ## 7. Zero-Build Static Deployment with Offline Resilience
 - **Problem**: Space Apps judges and peer reviewers need instant, reproducible loading without local compilation friction.
 - **Decision**: Built on native ES Modules, Leaflet via CDN, Tailwind CSS, and a lightweight Service Worker (`sw.js`). Added `netlify.toml` with security headers, immutable caching for `/data/*`, and a serverless proxy function (`netlify/functions/power.mjs`) to circumvent browser CORS restrictions if needed.
+
+## 8. Refinements from Scientific Review
+- **Short Record Warning**: Suppressed for records ≥ 15 years, retaining it exclusively for shorter exploratory spans.
+- **Offline Case Study Count**: Aligned UI counters to precisely display the 4 featured in-depth offline dossiers (Chennai, Jaipur, Manaus, Svalbard).
+- **Latency & Version Transparency**: Removed static '~1.2s' and 'v2.4' badges, replacing them with dynamic measured API latency computed per live query.
+- **Planetary Mean Removal**: Removed the unverified '~2.5x planetary mean' claim from the Svalbard dossier card.
+- **Scientific Phrasing on Non-Significant Trends**: For non-significant cases ($p \ge 0.05$), verdict phrasing states 'no statistically significant trend detected' rather than asserting directional verbs like 'rose'.
+- **Standardized Hemispheric Geographic Coordinates**: Normalized all latitude/longitude displays to Cardinal Hemispheric notation (e.g., Manaus formatted as 3.11°S, 60.02°W).
+- **Terminology Accuracy**: Updated 'Climatology STL' to 'Monthly climatology removal' to accurately reflect the 12-month calendar baseline subtraction procedure.
+- **Attribution & Team Credit**: Updated roster to officially attribute `[TESSARACT AND BHAVYAHARINI R , HARISH C J]`.
+- **Sensors Ready Replaced**: Updated header sub-bar telemetry banner to state 'Data source: NASA POWER'.

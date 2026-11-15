@@ -14,6 +14,12 @@ const VAR_METADATA = {
   ALLSKY_SFC_SW_DWN: { name: "Solar Irradiance", longname: "All Sky Surface Downwelling Irradiance", units: "kW-hr/m²/day" }
 };
 
+export function formatCoordinates(lat, lon, decimals = 2) {
+  const latStr = lat >= 0 ? `${lat.toFixed(decimals)}°N` : `${Math.abs(lat).toFixed(decimals)}°S`;
+  const lonStr = lon >= 0 ? `${lon.toFixed(decimals)}°E` : `${Math.abs(lon).toFixed(decimals)}°W`;
+  return `${latStr}, ${lonStr}`;
+}
+
 // Global App State
 let currentActiveAnalysis = null;
 let gridData = null;
@@ -213,7 +219,7 @@ export function renderForensicDeck(res) {
   if (spatialTitle) spatialTitle.textContent = meta.locationName;
 
   const spatialCoords = document.getElementById("forensic-spatial-coords");
-  if (spatialCoords) spatialCoords.textContent = `${meta.lat.toFixed(4)}°N, ${meta.lon.toFixed(4)}°E`;
+  if (spatialCoords) spatialCoords.textContent = formatCoordinates(meta.lat, meta.lon, 4);
 
   const missingEl = document.getElementById("forensic-missing");
   if (missingEl) missingEl.textContent = `${(meta.missingFraction * 100).toFixed(1)}%`;
@@ -235,11 +241,14 @@ export function renderForensicDeck(res) {
 
   const shortWarn = document.getElementById("forensic-short-warning");
   if (shortWarn) {
-    if (meta.isShortRecord) {
+    const years = meta.yearsSpanned || (meta.totalMonths / 12);
+    if (meta.isShortRecord || years < 15) {
       shortWarn.classList.remove("hidden");
-      shortWarn.textContent = `⚠️ Short record warning: Time series span is ${meta.yearsSpanned} years (< 15 years threshold). Low-frequency climate modes may obscure secular monotonic trends.`;
+      shortWarn.style.display = "block";
+      shortWarn.textContent = `⚠️ Short record warning: Time series span is ${years.toFixed(1)} years (< 15 years threshold). Low-frequency climate modes may obscure secular monotonic trends.`;
     } else {
       shortWarn.classList.add("hidden");
+      shortWarn.style.display = "none";
     }
   }
 
@@ -283,7 +292,7 @@ export function renderForensicDeck(res) {
   if (cardWhat) cardWhat.textContent = `${meta.longname} (${meta.variable})`;
 
   const cardWhere = document.getElementById("card-where-val");
-  if (cardWhere) cardWhere.textContent = `${meta.locationName} (${meta.lat.toFixed(2)}°, ${meta.lon.toFixed(2)}°)`;
+  if (cardWhere) cardWhere.textContent = `${meta.locationName} (${formatCoordinates(meta.lat, meta.lon, 2)})`;
 
   const cardHowMuch = document.getElementById("card-howmuch-val");
   if (cardHowMuch) {
@@ -342,8 +351,13 @@ export function renderForensicDeck(res) {
   // Operative Verdict Text
   const verdictText = document.getElementById("forensic-verdict-text");
   if (verdictText) {
-    const dirVerb = corrected.slopePerDecade > 0 ? "rose" : corrected.slopePerDecade < 0 ? "fell" : "remained steady";
-    verdictText.textContent = `Between ${startYr} and ${endYr}, mean ${meta.longname.toLowerCase()} here ${dirVerb} about ${Math.abs(corrected.slopePerDecade).toFixed(3)} ${meta.units} per decade (corrected p = ${formatP(corrected.p)}, ${verdict.headline}).`;
+    if (corrected.p >= 0.05 || !verdict.isSignificant) {
+      const sign = corrected.slopePerDecade >= 0 ? "+" : "";
+      verdictText.textContent = `Between ${startYr} and ${endYr}, no statistically significant trend detected for mean ${meta.longname.toLowerCase()} here (${sign}${corrected.slopePerDecade.toFixed(3)} ${meta.units} per decade, corrected p = ${formatP(corrected.p)}, ${verdict.headline}).`;
+    } else {
+      const dirVerb = corrected.slopePerDecade > 0 ? "rose" : corrected.slopePerDecade < 0 ? "fell" : "remained steady";
+      verdictText.textContent = `Between ${startYr} and ${endYr}, mean ${meta.longname.toLowerCase()} here ${dirVerb} about ${Math.abs(corrected.slopePerDecade).toFixed(3)} ${meta.units} per decade (corrected p = ${formatP(corrected.p)}, ${verdict.headline}).`;
+    }
   }
 }
 
@@ -396,7 +410,7 @@ export async function handleExecuteInvestigation() {
   if (statusBanner) {
     statusBanner.classList.remove("hidden", "bg-error/20", "text-error", "border-error/40");
     statusBanner.classList.add("bg-surface-container-high", "text-primary", "border-primary/40");
-    statusBanner.textContent = `Connecting to NASA POWER API (monthly point: ${variable} @ ${lat}°N, ${lon}°E, ${startYear}-${endYear})...`;
+    statusBanner.textContent = `Connecting to NASA POWER API (monthly point: ${variable} @ ${formatCoordinates(lat, lon, 2)}, ${startYear}-${endYear})...`;
   }
 
   const startTime = performance.now();
@@ -511,7 +525,7 @@ export function normalizeCaseFile(d) {
       variable: d.variable,
       longname: d.variableName || metaMeta.longname || d.variable,
       units: d.units || metaMeta.units || "",
-      locationName: d.locationName || `Grid Cell (${d.lat.toFixed(2)}°N, ${d.lon.toFixed(2)}°E)`,
+      locationName: d.locationName || `Grid Cell (${formatCoordinates(d.lat, d.lon, 2)})`,
       lat: d.lat,
       lon: d.lon,
       sourceName: d.provenance?.source || "NASA POWER API (MERRA-2 / CERES)",
@@ -711,8 +725,8 @@ function updateGridCellInspector(cell) {
       badge.className = "px-2 py-0.5 rounded text-[10px] font-mono border border-surface-container-high text-on-surface-variant bg-surface-container-high";
     }
   }
-  if (coords) coords.textContent = `${cell.lat.toFixed(2)}°N, ${cell.lon.toFixed(2)}°E`;
-  if (locname) locname.textContent = cell.locationName || `Indian Grid Cell (${cell.lat}°N, ${cell.lon}°E)`;
+  if (coords) coords.textContent = formatCoordinates(cell.lat, cell.lon, 2);
+  if (locname) locname.textContent = cell.locationName || `Indian Grid Cell (${formatCoordinates(cell.lat, cell.lon, 2)})`;
   if (slope) {
     const s = cell.slopePerDecade >= 0 ? "+" : "";
     slope.textContent = `${s}${cell.slopePerDecade.toFixed(3)} ${cell.units}/dec`;

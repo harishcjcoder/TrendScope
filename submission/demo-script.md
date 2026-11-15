@@ -1,9 +1,9 @@
-﻿# TrendScope: 3-Minute Video Demo Script (demo-script.md)
+# TrendScope: 3-Minute Video Demo Script (demo-script.md)
 
 **Title**: TrendScope — Earth Observatory Intelligence  
 **Challenge**: NASA Space Apps Challenge 2026: "Be an Earth System Trend Detective"  
 **Duration**: 3 Minutes (180 Seconds)  
-**Presenter**: Harish C.J. & TrendScope Team  
+**Presenter**: [TESSARACT AND BHAVYAHARINI R , HARISH C J]  
 
 ---
 
