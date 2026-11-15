@@ -351,7 +351,8 @@ export function renderForensicDeck(res) {
   // Operative Verdict Text
   const verdictText = document.getElementById("forensic-verdict-text");
   if (verdictText) {
-    if (corrected.p >= 0.05 || !verdict.isSignificant) {
+    const isSignificant = corrected.p < 0.05;
+    if (!isSignificant) {
       const sign = corrected.slopePerDecade >= 0 ? "+" : "";
       verdictText.textContent = `Between ${startYr} and ${endYr}, no statistically significant trend detected for mean ${meta.longname.toLowerCase()} here (${sign}${corrected.slopePerDecade.toFixed(3)} ${meta.units} per decade, corrected p = ${formatP(corrected.p)}, ${verdict.headline}).`;
     } else {
@@ -559,6 +560,7 @@ export function normalizeCaseFile(d) {
       slopePerDecade: d.slopePerDecade,
       correctedP: d.correctedP,
       naiveP: d.naiveP,
+      isSignificant: d.isSignificant !== undefined ? d.isSignificant : (d.correctedP < 0.05),
       isShortRecord: years < 15
     }
   };
